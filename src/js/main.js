@@ -1,10 +1,10 @@
-require('../css/style.css');
+// require('../css/style.css');
+import App from '../app1.vue';
+
 //document.body.innerHTML="webpack";
 import Vue from 'vue';
 new Vue({
-	el:'#app',
-	data:{
-		title:'hello vue'
-	}
+	el: '#app',
+	render: h => h(App),
 })
 
