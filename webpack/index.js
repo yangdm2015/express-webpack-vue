@@ -3,6 +3,7 @@ var htmlWebpackPlugin = require('html-webpack-plugin');
 const vueLoaderConfig = require('./vue-loader.conf');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const config = require('../config');
+const utils = require('./utils');
 
 module.exports = {
     //js入口文件我们默认以多入口为例子，其他用法可以关注我的文章后续会发出来
@@ -45,6 +46,14 @@ module.exports = {
             { //html加载器（html－webpack－plugin默认以ejs加载页面防止报错我们需要html加载器）
                 test: /\.html$/,
                 loader: 'html-loader'
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+                }
             }
         ]
     },

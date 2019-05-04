@@ -8,29 +8,29 @@ var bodyParser = require('body-parser');
 var ejs = require('ejs');
 var index = require('./routes/index');
 var users = require('./routes/users');
-var tree = require('./routes/users');
+var tree = require('./routes/tree');
 //在express中加载webpack模块
 var webpack = require('webpack');
 //webpack的配置文件
 var webpackConfig = require('./webpack/index.js');
 //启动webpack的方法webpack(配置文件对象，回调)
-var compiler = webpack(webpackConfig, function (err, stats) {
-	//我们可以在stats中看到webpack打包的过程与命令行执行的结果是一样的
-	if (err) {
-		console.error('webpack 编译报错', err)
-	}
-	console.log(stats.toString({
-		colors: true
-	}));
-	//通过compiler对象可以开启watch模式来监听原文件的变化，如果原文件发生改变就会
-	//触发webpack的重新打包回调函数内部与打包函数是一样的
-	compiler.watch({
-		aggregateTimeout: 300,
-		poll: undefined,
-		ignored: '/node_modules/'
-	}, function (err, stats) {
+var compiler = webpack(webpackConfig, function(err, stats) {
+    //我们可以在stats中看到webpack打包的过程与命令行执行的结果是一样的
+    if (err) {
+        console.error('webpack 编译报错', err)
+    }
+    console.log(stats.toString({
+        colors: true
+    }));
+    //通过compiler对象可以开启watch模式来监听原文件的变化，如果原文件发生改变就会
+    //触发webpack的重新打包回调函数内部与打包函数是一样的
+    compiler.watch({
+        aggregateTimeout: 300,
+        poll: undefined,
+        ignored: '/node_modules/'
+    }, function(err, stats) {
 
-	})
+    })
 });
 
 var app = express();
@@ -51,24 +51,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.get('/getData', tree);
-
+app.get('/hello', function(req, res) {
+    console.log('$$$$$$$$$$$$$$$$$ hello $$$$$$$$$$$$$$$$$$')
+    res.send('GET request to homepage');
+});
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-	var err = new Error('Not Found');
-	err.status = 404;
-	next(err);
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
-app.use(function (err, req, res, next) {
-	// set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function(err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-	// render the error page
-	res.status(err.status || 500);
-	res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;

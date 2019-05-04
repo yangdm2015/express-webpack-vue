@@ -1,10 +1,12 @@
 // require('../css/style.css');
-import App from '../app1.vue';
-
-//document.body.innerHTML="webpack";
 import Vue from 'vue';
-new Vue({
-	el: '#app',
-	render: h => h(App),
-})
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import App from '../App.vue';
+//document.body.innerHTML="webpack";
+Vue.use(ElementUI);
 
+new Vue({
+    el: '#app',
+    render: h => h(App),
+})
