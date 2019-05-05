@@ -31,30 +31,30 @@ module.exports = {
     //loader加载器
     module: {
         rules: [{
-                test: /\.vue$/,
-                loader: 'vue-loader',
-                // options: vueLoaderConfig
-            },
-            { //css加载器
-                test: /\.css$/,
-                loader: 'style-loader!css-loader'
-            },
-            {
-                test: /\.js/,
-                loader: 'babel-loader'
-            },
-            { //html加载器（html－webpack－plugin默认以ejs加载页面防止报错我们需要html加载器）
-                test: /\.html$/,
-                loader: 'html-loader'
-            },
-            {
-                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 10000,
-                    name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
-                }
+            test: /\.vue$/,
+            loader: 'vue-loader',
+            // options: vueLoaderConfig
+        },
+        { //css加载器
+            test: /\.css$/,
+            loader: ['style-loader', 'css-loader']
+        },
+        {
+            test: /\.js/,
+            loader: 'babel-loader'
+        },
+        { //html加载器（html－webpack－plugin默认以ejs加载页面防止报错我们需要html加载器）
+            test: /\.html$/,
+            loader: 'html-loader'
+        },
+        {
+            test: /\.(woff2?|woof|eot|ttf|otf)(\?.*)?$/,
+            loader: 'url-loader',
+            options: {
+                limit: 100000,
+                name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
             }
+        }
         ]
     },
     //html页面扩展
@@ -63,11 +63,11 @@ module.exports = {
         new VueLoaderPlugin(),
         new htmlWebpackPlugin({
             //这个是生成的html文件名，我们把它直接放在views中覆盖原有的欢迎页面
-            filename: '../views/index.html',
+            filename: './views/index.html',
             //这个是根据哪个页面模版来打包文件
             template: './src/tpl/index.html',
             //chunks代表当前页面需要引入上述哪个依赖文件，我们直接将两个都引入
-            chunks: ['main']
+            title: '项目组件关系图'
         }),
 
     ]

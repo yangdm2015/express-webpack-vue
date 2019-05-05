@@ -2,10 +2,11 @@
 <template>
     <el-container style="height: 100%; border: 1px solid #eee">
         <el-header>
-            <el-form labelWidth="90">
+            <el-form labelWidth="90" inline>
                 <el-form-item :label="`共${pages.children.length}个页面，选择查看`">
                     <el-select
                         v-model="curPage"
+                        filterable
                         @change="handelPageChange"
                         multiple
                         clearable
@@ -22,6 +23,7 @@
                 <el-form-item :label="`共${all.length}个组件，选择查看`">
                     <el-select
                         v-model="curComponents"
+                        filterable
                         @change="handelComponentChange"
                         multiple
                         clearable
@@ -72,7 +74,8 @@ export default {
             let d = {
                 name: 'pages',
                 children: this.pages.children.filter(i => {
-                    return v.indexOf(i.name) > -1
+                    // 如果有选择，则按选择筛选，否则全要
+                    return v.length ? v.indexOf(i.name) > -1 : true
                 })
             }
             console.log('d = ', d)
