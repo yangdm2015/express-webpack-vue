@@ -39,7 +39,7 @@
                 </el-form-item>
             </el-form>
         </el-header>
-        <el-main id="myChart"></el-main>
+        <el-main id="myChart" style="padding:0"></el-main>
 
         <el-footer></el-footer>
     </el-container>
