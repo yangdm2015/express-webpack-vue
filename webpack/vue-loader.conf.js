@@ -2,8 +2,7 @@
 const utils = require('./utils')
 const isProduction = process.env.NODE_ENV === 'production'
 const sourceMapEnabled = true
-
-module.exports = {
+let op = {
   loaders: utils.cssLoaders({
     sourceMap: sourceMapEnabled,
     extract: isProduction
@@ -17,3 +16,7 @@ module.exports = {
     image: 'xlink:href'
   }
 }
+// console.log('op = ', op)
+// console.log('op.loaders.sass = ', op.loaders.sass)
+module.exports = op
+

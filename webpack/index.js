@@ -35,9 +35,17 @@ module.exports = {
             loader: 'vue-loader',
             // options: vueLoaderConfig
         },
+        {
+            test: /\.scss$/,
+            use: [
+                'vue-style-loader',
+                'css-loader',
+                'sass-loader'
+            ]
+        },
         { //css加载器
             test: /\.css$/,
-            loader: ['style-loader', 'css-loader']
+            loader: ['vue-style-loader', 'css-loader']
         },
         {
             test: /\.js/,

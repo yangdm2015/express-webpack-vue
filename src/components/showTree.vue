@@ -1,42 +1,47 @@
 
 <template>
-    <el-container style="height: 100%; border: 1px solid #eee">
+    <el-container style="height: 100%; border: 1px solid #eee" class="main-wrap">
         <el-header>
-            <el-form labelWidth="90" inline>
-                <el-form-item :label="`共${pages.children.length}个页面，选择查看`">
-                    <el-select
-                        v-model="curPage"
-                        filterable
-                        @change="handelPageChange"
-                        multiple
-                        clearable
-                        placeholder="请选择"
-                    >
-                        <el-option
-                            v-for="page in pages.children"
-                            v-bind:key="page.name"
-                            :label="page.name"
-                            :value="page.name"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item :label="`共${all.length}个组件，选择查看`">
-                    <el-select
-                        v-model="curComponents"
-                        filterable
-                        @change="handelComponentChange"
-                        multiple
-                        clearable
-                        placeholder="请选择"
-                    >
-                        <el-option
-                            v-for="name in all"
-                            v-bind:key="name"
-                            :label="name"
-                            :value="name"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
+            <el-form label-idth="150px" inline>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item :label="`共${pages.children.length}个页面，选择查看`">
+                            <el-select
+                                v-model="curPage"
+                                filterable
+                                @change="handelPageChange"
+                                multiple
+                                clearable
+                                placeholder="请选择"
+                            >
+                                <el-option
+                                    v-for="page in pages.children"
+                                    v-bind:key="page.name"
+                                    :label="page.name"
+                                    :value="page.name"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item :label="`共${allComponentList.length}个组件，选择查看`">
+                            <el-select
+                                v-model="curComponent"
+                                filterable
+                                @change="handelComponentChange"
+                                clearable
+                                placeholder="请选择"
+                            >
+                                <el-option
+                                    v-for="name in allComponentList"
+                                    v-bind:key="name"
+                                    :label="name"
+                                    :value="name"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
             </el-form>
         </el-header>
         <el-main id="myChart" style="padding:0"></el-main>
@@ -47,7 +52,7 @@
 
 <script>
 import echarts from 'echarts';
-import { treeMapOptionGen } from '../utils/common-utils'
+import { treeMapOptionGen, getComponentsNameList } from '../utils/common-utils'
 import axios from 'axios'
 export default {
     data() {
@@ -60,45 +65,67 @@ export default {
             all: [],
             components: {},
             curPage: [],
-            curComponents: []
+            curComponent: null
         }
     },
     watch: {
 
+    },
+    computed: {
+        showPages() {
+            let r = {
+                ...this.pages
+            }
+            if (this.curPage.length) {
+                r.children = this.pages.children.filter(i => {
+                    return this.curPage.indexOf(i.name) > -1
+                })
+            }
+            if (this.curComponent) {
+                r = [this.allMap[this.curComponent]]
+            }
+            return r
+        },
+        allComponentList() {
+            return getComponentsNameList(this.showPages)
+        },
+        // showComponentsList() {
+        //     let r = typeof this.allMap === 'object' ? Object.keys(this.allMap) : []
+        //     this.showPages.length ? r = r.filter()
+        // }
     },
     mounted() {
         this.getData()
     },
     methods: {
         handelPageChange(v) {
-            let d = {
-                name: 'pages',
-                children: this.pages.children.filter(i => {
-                    // 如果有选择，则按选择筛选，否则全要
-                    return v.length ? v.indexOf(i.name) > -1 : true
-                })
-            }
-            console.log('d = ', d)
-            this.drawLine(d)
+            this.curComponent = null
+            this.drawLine()
         },
         handelComponentChange(v) {
-            let d = v.reduce((prev, cur) => {
-                prev.push(this.allMap[cur])
-                return prev
-            }, [])
-            this.drawLine(d)
+            // console.log('handelComponentChange')
+            this.drawLine()
         },
         getData() {
             axios.get(`${window.location.origin}/getData`)
                 .then(r => {
-                    this.pages.children = r.data.pages
+                    this.pages.children = r.data.pages.sort((a, b) => {
+                        if (a.name > b.name) {
+                            return 1
+                        }
+                        if (a.name < b.name) {
+                            return -1
+                        }
+                        return 0
+                    })
                     this.allMap = r.data.allMap
                     this.all = Object.keys(this.allMap)
-                    this.drawLine(this.pages)
+                    this.drawLine()
                 })
         },
 
-        drawLine(data) {
+        drawLine() {
+            let data = this.showPages
             // 基于准备好的dom，初始化echarts实例
             const myChart = echarts.init(document.getElementById('myChart'));
             // 绘制图表
@@ -108,5 +135,17 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.main-wrap /deep/ {
+    .el-form-item {
+        width: 100%;
+        .el-form-item__content {
+            width: calc(100% - 170px);
+            .el-select {
+                width: 90%;
+            }
+        }
+    }
+}
 </style>
+

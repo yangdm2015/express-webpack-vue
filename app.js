@@ -14,24 +14,24 @@ var webpack = require('webpack');
 //webpack的配置文件
 var webpackConfig = require('./webpack/index.js');
 //启动webpack的方法webpack(配置文件对象，回调)
-// var compiler = webpack(webpackConfig, function(err, stats) {
-//     //我们可以在stats中看到webpack打包的过程与命令行执行的结果是一样的
-//     if (err) {
-//         console.error('webpack 编译报错', err)
-//     }
-//     console.log(stats.toString({
-//         colors: true
-//     }));
-//     //通过compiler对象可以开启watch模式来监听原文件的变化，如果原文件发生改变就会
-//     //触发webpack的重新打包回调函数内部与打包函数是一样的
-//     compiler.watch({
-//         aggregateTimeout: 300,
-//         poll: undefined,
-//         ignored: '/node_modules/'
-//     }, function(err, stats) {
+var compiler = webpack(webpackConfig, function (err, stats) {
+    //我们可以在stats中看到webpack打包的过程与命令行执行的结果是一样的
+    if (err) {
+        console.error('webpack 编译报错', err)
+    }
+    console.log(stats.toString({
+        colors: true
+    }));
+    //通过compiler对象可以开启watch模式来监听原文件的变化，如果原文件发生改变就会
+    //触发webpack的重新打包回调函数内部与打包函数是一样的
+    compiler.watch({
+        aggregateTimeout: 300,
+        poll: undefined,
+        ignored: '/node_modules/'
+    }, function (err, stats) {
 
-//     })
-// });
+    })
+});
 
 var app = express();
 
@@ -71,4 +71,7 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
+
+const port = 3000
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 module.exports = app;
